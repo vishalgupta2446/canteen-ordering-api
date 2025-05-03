@@ -19,19 +19,13 @@ namespace TastyByThreeMusketeers.Migrations
 
             modelBuilder.Entity("TastyByThreeMusketeers.Core.Models.MenuItem", b =>
                 {
-                    b.Property<Guid>("MenuItemId")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("TEXT");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("TEXT");
+                        .HasColumnType("INTEGER");
 
                     b.Property<string>("Description")
                         .IsRequired()
                         .HasColumnType("TEXT");
-
-                    b.Property<bool>("IsAvailable")
-                        .HasColumnType("INTEGER");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -40,16 +34,16 @@ namespace TastyByThreeMusketeers.Migrations
                     b.Property<decimal>("Price")
                         .HasColumnType("TEXT");
 
-                    b.HasKey("MenuItemId");
+                    b.HasKey("Id");
 
                     b.ToTable("MenuItems");
                 });
 
             modelBuilder.Entity("TastyByThreeMusketeers.Core.Models.Notification", b =>
                 {
-                    b.Property<Guid>("NotificationId")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("TEXT");
+                        .HasColumnType("INTEGER");
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("TEXT");
@@ -61,64 +55,71 @@ namespace TastyByThreeMusketeers.Migrations
                         .IsRequired()
                         .HasColumnType("TEXT");
 
-                    b.Property<Guid>("UserId")
-                        .HasColumnType("TEXT");
+                    b.Property<int>("OrderId")
+                        .HasColumnType("INTEGER");
 
-                    b.HasKey("NotificationId");
+                    b.HasKey("Id");
 
-                    b.HasIndex("UserId");
+                    b.HasIndex("OrderId");
 
                     b.ToTable("Notifications");
                 });
 
             modelBuilder.Entity("TastyByThreeMusketeers.Core.Models.Order", b =>
                 {
-                    b.Property<Guid>("OrderId")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("TEXT");
+                        .HasColumnType("INTEGER");
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("TEXT");
 
-                    b.Property<bool>("IsCounterOrder")
+                    b.Property<bool>("IsDeskOrder")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("OrderSource")
                         .HasColumnType("INTEGER");
 
                     b.Property<int>("OrderStatus")
                         .HasColumnType("INTEGER");
 
-                    b.Property<int>("PaymentStatus")
+                    b.Property<string>("SeatNumber")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("UserId")
                         .HasColumnType("INTEGER");
 
-                    b.Property<decimal>("TotalAmount")
-                        .HasColumnType("TEXT");
+                    b.HasKey("Id");
 
-                    b.Property<Guid>("UserId")
-                        .HasColumnType("TEXT");
-
-                    b.HasKey("OrderId");
+                    b.HasIndex("UserId");
 
                     b.ToTable("Orders");
                 });
 
             modelBuilder.Entity("TastyByThreeMusketeers.Core.Models.OrderItem", b =>
                 {
-                    b.Property<Guid>("OrderItemId")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("MenuItemId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
                         .HasColumnType("TEXT");
 
-                    b.Property<Guid>("MenuItemId")
-                        .HasColumnType("TEXT");
+                    b.Property<int>("OrderId")
+                        .HasColumnType("INTEGER");
 
-                    b.Property<Guid>("OrderId")
+                    b.Property<decimal>("Price")
                         .HasColumnType("TEXT");
 
                     b.Property<int>("Quantity")
                         .HasColumnType("INTEGER");
 
-                    b.Property<decimal>("SubTotal")
-                        .HasColumnType("TEXT");
-
-                    b.HasKey("OrderItemId");
+                    b.HasKey("Id");
 
                     b.HasIndex("MenuItemId");
 
@@ -129,66 +130,65 @@ namespace TastyByThreeMusketeers.Migrations
 
             modelBuilder.Entity("TastyByThreeMusketeers.Core.Models.Payment", b =>
                 {
-                    b.Property<Guid>("PaymentId")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("TEXT");
+                        .HasColumnType("INTEGER");
 
                     b.Property<decimal>("Amount")
                         .HasColumnType("TEXT");
 
-                    b.Property<Guid>("OrderId")
-                        .HasColumnType("TEXT");
+                    b.Property<int>("OrderId")
+                        .HasColumnType("INTEGER");
 
                     b.Property<DateTime>("PaidAt")
                         .HasColumnType("TEXT");
 
-                    b.Property<int>("PaymentMethod")
-                        .HasColumnType("INTEGER");
-
                     b.Property<int>("PaymentStatus")
                         .HasColumnType("INTEGER");
 
-                    b.Property<string>("TransactionId")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
+                    b.HasKey("Id");
 
-                    b.HasKey("PaymentId");
-
-                    b.HasIndex("OrderId");
+                    b.HasIndex("OrderId")
+                        .IsUnique();
 
                     b.ToTable("Payments");
                 });
 
             modelBuilder.Entity("TastyByThreeMusketeers.Core.Models.User", b =>
                 {
-                    b.Property<Guid>("UserId")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("TEXT");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("TEXT");
+                        .HasColumnType("INTEGER");
 
                     b.Property<string>("Email")
                         .IsRequired()
                         .HasColumnType("TEXT");
 
-                    b.Property<int>("MembershipStatus")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<string>("Name")
+                    b.Property<string>("SeatNumber")
                         .IsRequired()
                         .HasColumnType("TEXT");
 
-                    b.Property<string>("Phone")
+                    b.Property<string>("UserName")
                         .IsRequired()
                         .HasColumnType("TEXT");
 
-                    b.HasKey("UserId");
+                    b.HasKey("Id");
 
                     b.ToTable("Users");
                 });
 
             modelBuilder.Entity("TastyByThreeMusketeers.Core.Models.Notification", b =>
+                {
+                    b.HasOne("TastyByThreeMusketeers.Core.Models.Order", "Order")
+                        .WithMany("Notifications")
+                        .HasForeignKey("OrderId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Order");
+                });
+
+            modelBuilder.Entity("TastyByThreeMusketeers.Core.Models.Order", b =>
                 {
                     b.HasOne("TastyByThreeMusketeers.Core.Models.User", "User")
                         .WithMany()
@@ -208,7 +208,7 @@ namespace TastyByThreeMusketeers.Migrations
                         .IsRequired();
 
                     b.HasOne("TastyByThreeMusketeers.Core.Models.Order", "Order")
-                        .WithMany()
+                        .WithMany("Items")
                         .HasForeignKey("OrderId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -221,12 +221,22 @@ namespace TastyByThreeMusketeers.Migrations
             modelBuilder.Entity("TastyByThreeMusketeers.Core.Models.Payment", b =>
                 {
                     b.HasOne("TastyByThreeMusketeers.Core.Models.Order", "Order")
-                        .WithMany()
-                        .HasForeignKey("OrderId")
+                        .WithOne("Payment")
+                        .HasForeignKey("TastyByThreeMusketeers.Core.Models.Payment", "OrderId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Order");
+                });
+
+            modelBuilder.Entity("TastyByThreeMusketeers.Core.Models.Order", b =>
+                {
+                    b.Navigation("Items");
+
+                    b.Navigation("Notifications");
+
+                    b.Navigation("Payment")
+                        .IsRequired();
                 });
 #pragma warning restore 612, 618
         }

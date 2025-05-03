@@ -1,14 +1,34 @@
-﻿namespace TastyByThreeMusketeers.Applications.Services
+﻿using System.Threading.Tasks;
+using TastyByThreeMusketeers.Core.Interfaces;
+using TastyByThreeMusketeers.Core.Models;
+
+namespace TastyByThreeMusketeers.Applications.Services
 {
-    public class NotificationService
+    public class NotificationService :INotificationService
     {
-        public async Task SendNotification(Guid userId, string message)
+        private readonly INotificationRepository _notificationRepository;
+        public NotificationService(INotificationRepository notificationRepository)
         {
-            // Send notification logic (in-app, push, email, etc.)
+            _notificationRepository = notificationRepository;
         }
-        public async Task NotifyOrderReady(Guid orderId)
+        public async Task NotifyOrderStatusChangeAsync(int orderId, string statusMessage)
         {
-            // Notify the user when the order is ready
+            var notification = new Notification
+            {
+                OrderId = orderId,
+                Message = statusMessage,
+                CreatedAt = DateTime.UtcNow
+            };
+            await _notificationRepository.AddAsync(notification);
         }
+        public async Task<IEnumerable<Notification>> GetNotificationsByUserAsync(int userId)
+        {
+            return await _notificationRepository.GetNotificationsByUserAsync(userId);
+        }
+    }
+    public interface INotificationService 
+    {
+        Task<IEnumerable<Notification>> GetNotificationsByUserAsync(int userId);
+        Task NotifyOrderStatusChangeAsync(int orderId, string statusMessage);
     }
 }

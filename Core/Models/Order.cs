@@ -1,25 +1,21 @@
-﻿namespace TastyByThreeMusketeers.Core.Models
+﻿using TastyByThreeMusketeers.Core.Models.Enums;
+
+namespace TastyByThreeMusketeers.Core.Models
 {
     public class Order
     {
-        public Guid OrderId { get; set; }
-        public Guid UserId { get; set; }
+        public int Id { get; set; }
+        public int UserId { get; set; }
+        public bool IsDeskOrder { get; set; }
+        public string SeatNumber { get; set; }
+        public OrderSource OrderSource { get; set; }
         public OrderStatus OrderStatus { get; set; }
-        public decimal TotalAmount { get; set; }
-        public PaymentStatus PaymentStatus { get; set; }
-        public bool IsCounterOrder { get; set; }
         public DateTime CreatedAt { get; set; }
+        public ICollection<OrderItem> Items { get; set; }
+        public User User { get; set; }
+        public Payment Payment { get; set; }
+        public ICollection<Notification> Notifications { get; set; }
+
     }
-    public enum OrderStatus
-    {
-        Pending,
-        Preparing,
-        Completed,
-        Cancelled
-    }
-    public enum PaymentStatus
-    {
-        Pending,
-        Paid
-    }
+    
 }

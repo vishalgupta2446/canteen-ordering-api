@@ -1,78 +1,44 @@
 ﻿using TastyByThreeMusketeers.Core.Interfaces;
 using TastyByThreeMusketeers.Core.Models;
+using TastyByThreeMusketeers.Core.Models.Enums;
 
 namespace TastyByThreeMusketeers.Applications.Services
 {
-    public class PaymentService
-
+    public class PaymentService 
     {
-
         private readonly IPaymentRepository _paymentRepository;
-
         private readonly IOrderRepository _orderRepository;
-
-        public PaymentService(IPaymentRepository paymentRepository, IOrderRepository orderRepository)
-
+        private readonly INotificationService _notificationService;
+        public PaymentService(
+            IPaymentRepository paymentRepository,
+            IOrderRepository orderRepository,
+            INotificationService notificationService)
         {
-
             _paymentRepository = paymentRepository;
-
             _orderRepository = orderRepository;
-
+            _notificationService = notificationService;
         }
-
-        public async Task<Payment> ProcessPaymentAsync(Payment paymentDto)
-
+        public async Task<Payment> MakePaymentAsync(Payment payment)
         {
-
-            // Step 1: Retrieve the order details
-
-            var order = await _orderRepository.GetByIdAsync(paymentDto.OrderId);
-
-            if (order == null)
-
-            {
-
-                return null; // Order not found
-
-            }
-
-            // Step 2: Create payment entry
-
-            var payment = new Payment
-
-            {
-
-                PaymentId = Guid.NewGuid(),
-
-                OrderId = paymentDto.OrderId,
-
-                Amount = order.TotalAmount,
-
-                PaymentStatus = PaymentStatus.Pending,
-
-                PaymentMethod = paymentDto.PaymentMethod,
-
-                TransactionId = paymentDto.TransactionId,
-
-                PaidAt = DateTime.UtcNow
-
-            };
-
-            // Step 3: Save payment information
-
+            var existingOrder = await _orderRepository.GetByIdAsync(payment.OrderId);
+            if (existingOrder == null) throw new Exception("Order not found.");
+            payment.PaidAt = DateTime.UtcNow;
             await _paymentRepository.AddAsync(payment);
-
-            // Step 4: Update order status to "Paid"
-
-            order.OrderStatus = OrderStatus.Completed;
-
-            await _orderRepository.UpdateAsync(order);
-
+            if (payment.PaymentStatus == PaymentStatus.Completed)
+            {
+                existingOrder.OrderStatus = OrderStatus.Confirmed;
+                await _orderRepository.UpdateAsync(existingOrder);
+                await _notificationService.NotifyOrderStatusChangeAsync(existingOrder.Id, "Payment received. Order confirmed.");
+            }
             return payment;
-
         }
-
+        public async Task<Payment> GetPaymentByOrderIdAsync(int orderId)
+        {
+            return await _paymentRepository.GetPaymentByOrderIdAsync(orderId);
+        }
+    }
+    public interface IPaymentService
+    {
     }
 
 }

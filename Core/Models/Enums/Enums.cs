@@ -1,22 +1,22 @@
 ﻿namespace TastyByThreeMusketeers.Core.Models.Enums
 {
-    public enum PaymentMethod
+    public enum OrderStatus
     {
-        Cash,
-        Card,
-        UPI
+        Pending,
+        Confirmed,
+        Preparing,
+        Prepared,
+        Completed
     }
     public enum PaymentStatus
     {
         Pending,
-        Paid,
+        Completed,
         Failed
     }
-    public enum OrderStatus
+    public enum OrderSource
     {
-        Pending,
-        Preparing,
-        Completed,
-        Cancelled
+        Online,
+        Counter
     }
 }

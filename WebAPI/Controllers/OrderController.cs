@@ -1,12 +1,13 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using TastyByThreeMusketeers.Applications.Services;
 using TastyByThreeMusketeers.Core.Models;
+using TastyByThreeMusketeers.Core.Models.Enums;
 using TastyByThreeMusketeers.WebAPI.DTOs;
 
 namespace TastyByThreeMusketeers.WebAPI.Controllers
 {
-    [Route("api/[controller]")]
     [ApiController]
+    [Route("api/[controller]")]
     public class OrderController : ControllerBase
     {
         private readonly OrderService _orderService;
@@ -15,22 +16,22 @@ namespace TastyByThreeMusketeers.WebAPI.Controllers
             _orderService = orderService;
         }
         [HttpPost]
-        public async Task<IActionResult> PlaceOrderAsync([FromBody] OrderDTO order)
+        public async Task<IActionResult> PlaceOrder([FromBody] OrderDTO orderDto)
         {
-            await _orderService.PlaceOrderAsync(order);
-            return Ok(order);
+            var result = await _orderService.PlaceOrderAsync(orderDto);
+            return Ok(result);
         }
-        [HttpPut("{id}/status")]
-        public async Task<IActionResult> UpdateOrderStatus(Guid id, [FromBody] OrderStatus status)
+        [HttpGet("user/{userId}")]
+        public async Task<IActionResult> GetOrdersByUser(int userId)
         {
-           // await _orderService.UpdateOrderStatus(id, status);
-            return Ok();
-        }
-        [HttpGet("{userId}")]
-        public async Task<IActionResult> GetOrdersByUser(Guid userId)
-        {
-            //var orders = await _orderService.GetOrdersByUser(userId);
+            var orders = await _orderService.GetOrdersByUserAsync(userId);
             return Ok(orders);
+        }
+        [HttpPut("{orderId}/status")]
+        public async Task<IActionResult> UpdateOrderStatus(int orderId, [FromQuery] OrderStatus status)
+        {
+            await _orderService.UpdateOrderStatusAsync(orderId, status);
+            return Ok(orderId);
         }
     }
 }

@@ -4,8 +4,7 @@ namespace TastyByThreeMusketeers.Core.Interfaces
 {
     public interface IOrderRepository : IRepository<Order>
     {
-        Task<IEnumerable<Order>> GetByIdAsync(Guid userId);
-        Task<IEnumerable<Order>> GetOrdersByUser(Guid userId);
-        Task UpdateOrderStatus(Guid orderId, OrderStatus status);
+        Task<IEnumerable<Order>> GetOrdersByUserAsync(int userId);
+        Task<IEnumerable<Order>> GetActiveOrdersAsync();
     }
 }

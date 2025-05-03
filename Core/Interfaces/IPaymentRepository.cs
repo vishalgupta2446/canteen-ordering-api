@@ -4,6 +4,6 @@ namespace TastyByThreeMusketeers.Core.Interfaces
 {
     public interface IPaymentRepository : IRepository<Payment>
     {
-        // Add extra Payment-specific queries if needed
+        Task<Payment> GetPaymentByOrderIdAsync(int orderId);
     }
 }

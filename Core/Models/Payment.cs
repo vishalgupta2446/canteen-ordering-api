@@ -7,19 +7,11 @@
 
     public class Payment
     {
-        [Key]
-        public Guid PaymentId { get; set; }
-        [Required]
-        public Guid OrderId { get; set; }
-        [Required]
+        public int Id { get; set; }
+        public int OrderId { get; set; }
         public decimal Amount { get; set; }
-        [Required]
-        public PaymentMethod PaymentMethod { get; set; } // Enum-like: Card, UPI, Cash
-        [Required]
-        public PaymentStatus PaymentStatus { get; set; } // Enum-like: Pending, Paid
-        public string TransactionId { get; set; }
+        public PaymentStatus PaymentStatus { get; set; }
         public DateTime PaidAt { get; set; }
-        [ForeignKey("OrderId")]
         public Order Order { get; set; }
     }
 }

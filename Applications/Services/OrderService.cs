@@ -1,112 +1,73 @@
 ﻿using TastyByThreeMusketeers.Core.Interfaces;
 using TastyByThreeMusketeers.Core.Models;
+using TastyByThreeMusketeers.Core.Models.Enums;
+using TastyByThreeMusketeers.Infrastructure.Data;
 using TastyByThreeMusketeers.WebAPI.DTOs;
 
 namespace TastyByThreeMusketeers.Applications.Services
 {
-    public class OrderService
-
+    public class OrderService 
     {
-
-        private readonly IRepository<Order> _orderRepository;
-
-        private readonly IRepository<OrderItem> _orderItemRepository;
-
-        private readonly IRepository<Notification> _notificationRepository;
-
+        private readonly IOrderRepository _orderRepository;
+        private readonly INotificationService _notificationService;
+        private readonly CanteenConfig _canteenConfig;
         public OrderService(
-
-            IRepository<Order> orderRepository,
-
-            IRepository<OrderItem> orderItemRepository,
-
-            IRepository<Notification> notificationRepository)
-
+            IOrderRepository orderRepository,
+            INotificationService notificationService, CanteenConfig canteenConfig)
         {
-
             _orderRepository = orderRepository;
-
-            _orderItemRepository = orderItemRepository;
-
-            _notificationRepository = notificationRepository;
-
+            _notificationService = notificationService;
+            _canteenConfig = canteenConfig;
         }
-
-        public async Task<Order> PlaceOrderAsync(OrderDTO orderDto)
-
+        public async Task<object> PlaceOrderAsync(OrderDTO orderDTO)
         {
-
-            // Create Order entity
-
-            var order = new Order
-
+            
+            if (!_canteenConfig.IsDeskModeAvailable)
             {
-
-                OrderId = Guid.NewGuid(),
-
-                UserId = orderDto.UserId,
-
-                OrderStatus = OrderStatus.Pending,
-
-                TotalAmount = orderDto.Items.Sum(item => item.Price * item.Quantity),
-
-                CreatedAt = DateTime.UtcNow
-
-            };
-
-            await _orderRepository.AddAsync(order); // Persist order
-
-            // Create OrderItems for each item in the OrderDTO
-
-            foreach (var item in orderDto.Items)
-
-            {
-
-                var orderItem = new OrderItem
-
-                {
-
-                    OrderItemId = Guid.NewGuid(),
-
-                    OrderId = order.OrderId,
-
-                    MenuItemId = item.MenuItemId,
-
-                    Quantity = item.Quantity,
-
-                    Price = item.Price,
-
-                    SubTotal = item.Price * item.Quantity
-
-                };
-
-                await _orderItemRepository.AddAsync(orderItem); // Persist order item
-
+                return "Desk Mode is currently unavailable. Please try later.";
             }
-
-            // Create Notification for the user
-
-            var notification = new Notification
-
+            var order = new Order
             {
-
-                UserId = orderDto.UserId,
-
-                Message = $"Your order {order.OrderId} has been placed successfully.",
-
-                IsRead = false,
-
-                CreatedAt = DateTime.UtcNow
-
+                UserId = orderDTO.UserId,
+                IsDeskOrder = orderDTO.IsDeskMode,
+                SeatNumber = orderDTO.SeatNumber,
+                OrderSource = orderDTO.OrderSource,
+                OrderStatus = OrderStatus.Pending,
+                CreatedAt = DateTime.UtcNow,
+                Items = orderDTO.Items.Select(item => new OrderItem
+                {   Name = item.Name,
+                    MenuItemId = item.MenuItemId,
+                    Quantity = item.Quantity,
+                    Price = item.Price
+                }).ToList()
             };
-
-            await _notificationRepository.AddAsync(notification); // Persist notification
-
-            return order; // Return the created Order
-
+            await _orderRepository.AddAsync(order);
+            await _notificationService.NotifyOrderStatusChangeAsync(order.Id, "Order placed successfully.");
+            return order.Id;
         }
-
+        public async Task<IEnumerable<Order>> GetOrdersByUserAsync(int userId)
+        {
+            return await _orderRepository.GetOrdersByUserAsync(userId);
+        }
+        public async Task<Order> GetOrderByIdAsync(int orderId)
+        {
+            return await _orderRepository.GetByIdAsync(orderId);
+        }
+        public async Task UpdateOrderStatusAsync(int orderId, OrderStatus status)
+        {
+            var order = await _orderRepository.GetByIdAsync(orderId);
+            if (order == null) throw new Exception("Order not found.");
+            order.OrderStatus = status;
+            await _orderRepository.UpdateAsync(order);
+            await _notificationService.NotifyOrderStatusChangeAsync(orderId, $"Order status updated to {status}.");
+        }
+        public async Task<IEnumerable<Order>> GetActiveOrdersAsync()
+        {
+            return await _orderRepository.GetActiveOrdersAsync();
+        }
     }
-
+    public interface IOrderService
+    {
+    }
 
 }

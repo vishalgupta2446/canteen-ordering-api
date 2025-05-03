@@ -4,6 +4,6 @@ namespace TastyByThreeMusketeers.Core.Interfaces
 {
     public interface INotificationRepository : IRepository<Notification>
     {
-        // Add extra Notification-specific queries if needed
+        Task<IEnumerable<Notification>> GetNotificationsByUserAsync(int userId);
     }
 }

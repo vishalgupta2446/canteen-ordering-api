@@ -5,21 +5,13 @@
     using System.ComponentModel.DataAnnotations.Schema;
     public class OrderItem
     {
-        [Key]
-        public Guid OrderItemId { get; set; }
-        [Required]
-        public Guid OrderId { get; set; }
-        [Required]
-        public Guid MenuItemId { get; set; }
-        [Required]
+        public int Id { get; set; }
+        public int OrderId { get; set; }
+        public int MenuItemId { get; set; }
         public int Quantity { get; set; }
-        [Required]
-        public decimal SubTotal { get; set; } // Quantity * MenuItem.Price
-        [ForeignKey("OrderId")]
-        public Order Order { get; set; }
-        [ForeignKey("MenuItemId")]
-        public MenuItem MenuItem { get; set; }
-
         public decimal Price { get; set; }
+        public string Name { get; set; }
+        public Order Order { get; set; }
+        public MenuItem MenuItem { get; set; }
     }
 }

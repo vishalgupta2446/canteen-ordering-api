@@ -4,14 +4,11 @@
     using System.ComponentModel.DataAnnotations;
     public class Notification
     {
-        [Key]
-        public Guid NotificationId { get; set; }
-        [Required]
-        public Guid UserId { get; set; }
-        [Required]
+        public int Id { get; set; }
+        public int OrderId { get; set; }
         public string Message { get; set; }
-        public bool IsRead { get; set; } = false;
-        public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
-        public User User { get; set; }
+        public bool IsRead { get; set; }
+        public DateTime CreatedAt { get; set; }
+        public Order Order { get; set; }
     }
 }
