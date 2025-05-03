@@ -1,0 +1,6 @@
+@TastyByThreeMusketeers_HostAddress = http://localhost:5274
+
+GET {{TastyByThreeMusketeers_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
