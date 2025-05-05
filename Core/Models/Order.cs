@@ -7,7 +7,7 @@ namespace TastyByThreeMusketeers.Core.Models
         public int Id { get; set; }
         public int UserId { get; set; }
         public bool IsDeskOrder { get; set; }
-        public string SeatNumber { get; set; }
+        public string SeatNumberCabinNumber { get; set; }
         public OrderSource OrderSource { get; set; }
         public OrderStatus OrderStatus { get; set; }
         public DateTime CreatedAt { get; set; }
