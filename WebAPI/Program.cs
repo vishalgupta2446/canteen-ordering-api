@@ -14,7 +14,8 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();
 // Add DbContext
 builder.Services.AddDbContext<CanteenDbContext>(options =>
-   options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection")));
+   options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection")).EnableSensitiveDataLogging().LogTo(Console.WriteLine));
+
 
 var jwtSettingsSection = builder.Configuration.GetSection("JwtSettings");
 builder.Services.Configure<JwtSettings>(jwtSettingsSection);
@@ -45,7 +46,9 @@ builder.Services.AddScoped<IOrderRepository, OrderRepository>();
 builder.Services.AddScoped<IPaymentRepository, PaymentRepository>();
 builder.Services.AddScoped<INotificationRepository, NotificationRepository>();
 builder.Services.AddScoped<OrderService, OrderService>();
+builder.Services.AddScoped<IMenuItemRepository, MenuItemRepository>();
 builder.Services.AddScoped<PaymentService, PaymentService>();
+builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<INotificationService, NotificationService>();
 builder.Services.AddScoped<IJwtTokenService, JwtTokenService>();
 builder.Services.AddSingleton<CanteenConfig>(new CanteenConfig { IsDeskModeAvailable = true }); // Start with Desk Mode available
@@ -91,6 +94,12 @@ builder.Services.AddCors(options =>
     });
 });
 var app = builder.Build();
+using (var scope = app.Services.CreateScope())
+{
+   /* var db = scope.ServiceProvider.GetRequiredService<CanteenDbContext>();
+    db.Database.EnsureCreated();
+    db.Database.Migrate();*/// This auto-creates tables if missing
+}
 // Configure middleware
 app.UseSwagger();
 app.UseSwaggerUI(c =>

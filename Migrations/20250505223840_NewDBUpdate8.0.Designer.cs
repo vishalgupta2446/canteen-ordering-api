@@ -11,8 +11,8 @@ using TastyByThreeMusketeers.Infrastructure.Data;
 namespace TastyByThreeMusketeers.Migrations
 {
     [DbContext(typeof(CanteenDbContext))]
-    [Migration("20250503195622_AddPaymentAndNotificationchangedjbjh")]
-    partial class AddPaymentAndNotificationchangedjbjh
+    [Migration("20250505223840_NewDBUpdate8.0")]
+    partial class NewDBUpdate80
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -29,6 +29,9 @@ namespace TastyByThreeMusketeers.Migrations
                     b.Property<string>("Description")
                         .IsRequired()
                         .HasColumnType("TEXT");
+
+                    b.Property<bool>("IsAvailable")
+                        .HasColumnType("INTEGER");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -86,7 +89,7 @@ namespace TastyByThreeMusketeers.Migrations
                     b.Property<int>("OrderStatus")
                         .HasColumnType("INTEGER");
 
-                    b.Property<string>("SeatNumber")
+                    b.Property<string>("SeatNumberCabinNumber")
                         .IsRequired()
                         .HasColumnType("TEXT");
 
@@ -143,11 +146,23 @@ namespace TastyByThreeMusketeers.Migrations
                     b.Property<int>("OrderId")
                         .HasColumnType("INTEGER");
 
-                    b.Property<DateTime>("PaidAt")
+                    b.Property<DateTime>("PaymentDate")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("PaymentMethod")
+                        .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.Property<int>("PaymentStatus")
                         .HasColumnType("INTEGER");
+
+                    b.Property<string>("TransactionId")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("UpiId")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
 
                     b.HasKey("Id");
 
@@ -163,15 +178,22 @@ namespace TastyByThreeMusketeers.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("TEXT");
+
                     b.Property<string>("Email")
                         .IsRequired()
                         .HasColumnType("TEXT");
 
-                    b.Property<string>("SeatNumber")
+                    b.Property<string>("PasswordHash")
                         .IsRequired()
                         .HasColumnType("TEXT");
 
-                    b.Property<string>("UserName")
+                    b.Property<string>("Role")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Username")
                         .IsRequired()
                         .HasColumnType("TEXT");
 

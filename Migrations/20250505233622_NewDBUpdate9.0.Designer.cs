@@ -11,8 +11,8 @@ using TastyByThreeMusketeers.Infrastructure.Data;
 namespace TastyByThreeMusketeers.Migrations
 {
     [DbContext(typeof(CanteenDbContext))]
-    [Migration("20250505104602_NewDBUpdate")]
-    partial class NewDBUpdate
+    [Migration("20250505233622_NewDBUpdate9.0")]
+    partial class NewDBUpdate90
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -178,15 +178,22 @@ namespace TastyByThreeMusketeers.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("TEXT");
+
                     b.Property<string>("Email")
                         .IsRequired()
                         .HasColumnType("TEXT");
 
-                    b.Property<string>("SeatNumber")
+                    b.Property<string>("PasswordHash")
                         .IsRequired()
                         .HasColumnType("TEXT");
 
-                    b.Property<string>("UserName")
+                    b.Property<string>("Role")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Username")
                         .IsRequired()
                         .HasColumnType("TEXT");
 
