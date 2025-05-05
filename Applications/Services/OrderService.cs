@@ -21,7 +21,7 @@ namespace TastyByThreeMusketeers.Applications.Services
             _canteenConfig = canteenConfig;
             _context = context;
         }
-        public async Task<object> PlaceOrderAsync(OrderDTO orderDTO)
+        public async Task<OperationResult<Order>> PlaceOrderAsync(OrderDTO orderDTO)
         {
             foreach (var item in orderDTO.Items)
             {
@@ -38,19 +38,21 @@ namespace TastyByThreeMusketeers.Applications.Services
                     // Notify the user about the unavailable items
                     var message = $"The following items are out of stock: {string.Join(", ", unavailableItems)}.";
                     await _notificationService.NotifyOrderStatusChangeAsync(orderDTO.UserId, message);
-                    return false;// Or handle it according to your requirements
+                   return new OperationResult<Order>() { IsSuccess = false, Message = message };
+                   
                 }
             }
 
             if (!_canteenConfig.IsDeskModeAvailable)
             {
-                return "Desk Mode is currently unavailable. Please try later.";
+                return new OperationResult<Order>() { IsSuccess = false, Message = "Desk Mode is currently unavailable. Please try later." };
+               
             }
             var order = new Order
             {
                 UserId = orderDTO.UserId,
-                IsDeskOrder = orderDTO.IsDeskMode,
-                SeatNumberCabinNumber = orderDTO.SeatNumber,
+                IsDeskOrder = orderDTO.IsDeskOrder,
+                SeatNumberCabinNumber = orderDTO.SeatNumberCabinNumber,
                 OrderSource = orderDTO.OrderSource,
                 OrderStatus = OrderStatus.Pending,
                 CreatedAt = DateTime.UtcNow,
@@ -61,9 +63,10 @@ namespace TastyByThreeMusketeers.Applications.Services
                     Price = item.Price
                 }).ToList()
             };
-            await _orderRepository.AddAsync(order);
+            var c_order =await _orderRepository.AddAsync(order);
             await _notificationService.NotifyOrderStatusChangeAsync(order.Id, "Order placed successfully.");
-            return order.Id;
+            return new OperationResult<Order>() { IsSuccess = true, Message = "Order placed successfully.", Data= c_order };
+            
         }
         public async Task<IEnumerable<Order>> GetOrdersByUserAsync(int userId)
         {

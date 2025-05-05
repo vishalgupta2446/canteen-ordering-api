@@ -4,12 +4,13 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 using TastyByThreeMusketeers.Core.Models;
+using TastyByThreeMusketeers.WebAPI.DTOs;
 
 namespace TastyByThreeMusketeers.Core.Security
 {
     public interface IJwtTokenService
     {
-        string GenerateToken(string username, string role);
+        AuthResponseDTO GenerateToken(string username, string role);
     }
     public class JwtTokenService : IJwtTokenService
     {
@@ -18,7 +19,7 @@ namespace TastyByThreeMusketeers.Core.Security
         {
             _configuration = configuration.Value;
         }
-        public string GenerateToken(string username, string role)
+        public AuthResponseDTO GenerateToken(string username, string role)
         {
             var claims = new[]
             {
@@ -34,7 +35,7 @@ namespace TastyByThreeMusketeers.Core.Security
                 expires: DateTime.Now.AddHours(1),
                 signingCredentials: creds
             );
-            return new JwtSecurityTokenHandler().WriteToken(token);
+            return new AuthResponseDTO { Token = new JwtSecurityTokenHandler().WriteToken(token), Role = role, Username = username };
         }
     }
 }

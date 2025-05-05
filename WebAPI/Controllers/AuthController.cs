@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Identity.Data;
 using Microsoft.AspNetCore.Mvc;
 using TastyByThreeMusketeers.Core.Security;
+using TastyByThreeMusketeers.WebAPI.DTOs;
 
 namespace TastyByThreeMusketeers.WebAPI.Controllers
 {
@@ -20,7 +21,7 @@ namespace TastyByThreeMusketeers.WebAPI.Controllers
             if (loginRequest.Username == "admin" && loginRequest.Password == "adminpassword")
             {
                 var token = _jwtTokenService.GenerateToken(loginRequest.Username, "Admin");
-                return Ok(new { token });
+                return Ok(token);
             }
             return Unauthorized();
         }

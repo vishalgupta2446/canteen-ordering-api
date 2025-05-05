@@ -26,13 +26,13 @@ namespace TastyByThreeMusketeers.Core.Repositories
 
         public async Task<T> GetByIdAsync(int id) => await _dbSet.FindAsync(id);
 
-        public async Task AddAsync(T entity)
+        public async Task<T> AddAsync(T entity)
 
         {
 
             await _dbSet.AddAsync(entity);
-
             await _context.SaveChangesAsync();
+            return entity;
 
         }
 
