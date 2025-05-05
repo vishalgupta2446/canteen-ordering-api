@@ -10,7 +10,7 @@ namespace TastyByThreeMusketeers.Core.Security
 {
     public interface IJwtTokenService
     {
-        AuthResponseDTO GenerateToken(string username, string role);
+        AuthResponseDTO GenerateToken(User user);
     }
     public class JwtTokenService : IJwtTokenService
     {
@@ -19,12 +19,13 @@ namespace TastyByThreeMusketeers.Core.Security
         {
             _configuration = configuration.Value;
         }
-        public AuthResponseDTO GenerateToken(string username, string role)
+        public AuthResponseDTO GenerateToken(User user)
         {
             var claims = new[]
             {
-           new Claim(ClaimTypes.Name, username),
-           new Claim(ClaimTypes.Role, role)
+           new Claim(ClaimTypes.Name, user.Username),
+           new Claim(ClaimTypes.Role, user.Role),
+           new Claim("UserId", user.Id.ToString())  // Adding UserId claim if needed
        };
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration.Key));
             var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
@@ -35,7 +36,13 @@ namespace TastyByThreeMusketeers.Core.Security
                 expires: DateTime.Now.AddHours(1),
                 signingCredentials: creds
             );
-            return new AuthResponseDTO { Token = new JwtSecurityTokenHandler().WriteToken(token), Role = role, Username = username };
+            return new AuthResponseDTO
+            {
+                Token = new JwtSecurityTokenHandler().WriteToken(token),
+                Role = user.Role,
+                Username = user.Username,
+                UserId = user.Id
+            };
         }
     }
 }
