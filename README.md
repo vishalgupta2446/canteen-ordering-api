@@ -48,7 +48,7 @@ C# · ASP.NET Core 9 Web API · Entity Framework Core 9 (SQLite) · JWT bearer a
 **Prerequisites:** [.NET 9 SDK](https://dotnet.microsoft.com/download) or newer.
 
 ```bash
-git clone https://github.com/vishalgupta1998/canteen-ordering-api.git
+git clone https://github.com/vishalgupta2446/canteen-ordering-api.git
 cd canteen-ordering-api
 dotnet run --launch-profile http
 ```
