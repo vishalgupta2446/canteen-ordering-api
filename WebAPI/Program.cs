@@ -94,11 +94,11 @@ builder.Services.AddCors(options =>
     });
 });
 var app = builder.Build();
+// Apply EF Core migrations on startup so a fresh clone creates the SQLite database automatically.
 using (var scope = app.Services.CreateScope())
 {
-   /* var db = scope.ServiceProvider.GetRequiredService<CanteenDbContext>();
-    db.Database.EnsureCreated();
-    db.Database.Migrate();*/// This auto-creates tables if missing
+    var db = scope.ServiceProvider.GetRequiredService<CanteenDbContext>();
+    db.Database.Migrate();
 }
 // Configure middleware
 app.UseSwagger();

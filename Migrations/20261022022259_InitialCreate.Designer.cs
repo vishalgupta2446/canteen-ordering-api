@@ -11,8 +11,8 @@ using TastyByThreeMusketeers.Infrastructure.Data;
 namespace TastyByThreeMusketeers.Migrations
 {
     [DbContext(typeof(CanteenDbContext))]
-    [Migration("20250505220349_NewDBUpdate6.0")]
-    partial class NewDBUpdate60
+    [Migration("20261022022259_InitialCreate")]
+    partial class InitialCreate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
